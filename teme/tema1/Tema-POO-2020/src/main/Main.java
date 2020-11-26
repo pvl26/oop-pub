@@ -1,5 +1,10 @@
 package main;
 
+import action.Action;
+import org.json.JSONObject;
+import user.User;
+import video.Movie;
+import video.Serial;
 import checker.Checkstyle;
 import checker.Checker;
 import common.Constants;
@@ -13,7 +18,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * The entry point to this homework. It runs the checker that tests your implentation.
@@ -71,7 +78,68 @@ public final class Main {
         JSONArray arrayResult = new JSONArray();
 
         //TODO add here the entry point to your implementation
+        ArrayList<User> userList = new ArrayList<>();
+        input.getUsers().forEach(userInputData -> {
+            User user =  new User(userInputData);
+            userList.add(user);
+        });
 
+        ArrayList<Movie> movieList = new ArrayList<>();
+        input.getMovies().forEach(movieInputData -> {
+            Movie movie = new Movie(movieInputData);
+            movieList.add(movie);
+        });
+
+        ArrayList<Serial> serialList = new ArrayList<>();
+        input.getSerials().forEach(serialInputData -> {
+            Serial serial = new Serial(serialInputData);
+            serialList.add(serial);
+        });
+
+        ArrayList<Action> actionList = new ArrayList<>();
+        input.getCommands().forEach(commandInputData -> {
+            Action action = new Action(commandInputData);
+            actionList.add(action);
+        });
+
+        Stream<Action> actionStream = actionList.stream();
+
+        actionStream.forEachOrdered(action -> {
+            switch (action.getActionType().toLowerCase()) {
+                case "command" -> {
+                    User user = userList.stream().filter(usr -> usr.getUsername().equals(action.getUsername())).findFirst().orElse(null);
+                    if (user == null) { return; }
+                    JSONObject jsonObject = new JSONObject();
+                    switch (action.getType().toLowerCase()) {
+                        case "favorite" -> jsonObject = user.addToFavoriteMovies(action.getActionId(), action.getTitle());
+                        case "view" -> jsonObject = user.viewVideo(action.getActionId(), action.getTitle(), movieList, serialList);
+                        case "rating" -> jsonObject = user.addRating(action.getActionId(), action.getTitle(), action.getGrade(), action.getSeasonNumber(), movieList, serialList);
+                    }
+                    arrayResult.add(jsonObject);
+                }
+                case "query" -> {
+                    JSONObject jsonObject = new JSONObject();
+                    switch (action.getObjectType().toLowerCase()) {
+                        case "actors" -> {}
+                        case "movies" -> {}
+                        case "users" -> {}
+                    }
+                }
+                case "recommendation" -> {
+                    User user = userList.stream().filter(usr -> usr.getUsername().equals(action.getUsername())).findFirst().orElse(null);
+                    if (user == null) { return; }
+                    JSONObject jsonObject = new JSONObject();
+                    switch (action.getType().toLowerCase()) {
+                        case "standard" -> jsonObject = user.standardSearch(action.getActionId(), movieList, serialList);
+                        case "best_unseen" -> jsonObject = user.bestUnseen(action.getActionId(), movieList, serialList);
+                        case "popular" -> jsonObject = user.popularRecommendation(action.getActionId(), movieList, serialList);
+                        case "favorite" -> jsonObject = user.favoriteRecommendation(action.getActionId(), movieList, serialList, userList);
+                        case "search" -> jsonObject = user.premiumSearch(action.getActionId(), movieList, serialList, action.getGenre());
+                    }
+                    arrayResult.add(jsonObject);
+                }
+            }
+        });
         fileWriter.closeJSON(arrayResult);
     }
 }

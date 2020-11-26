@@ -1,10 +1,9 @@
-package Video;
+package video;
 
 import entertainment.Season;
 import fileio.SerialInputData;
 
 import java.util.ArrayList;
-
 /**
  * Information about a tv show, retrieved from ShowInputData
  * <p>
@@ -33,11 +32,25 @@ public class Serial extends Show {
         return seasons;
     }
 
+    public Double getGrade() {
+        double grade = 0.0;
+        for (Season season : this.seasons) {
+            Double seasonRating = 0.0;
+            for (Double rating : season.getRatings()) {
+                seasonRating += rating;
+            }
+            seasonRating /= season.getRatings().size();
+            grade += seasonRating;
+        }
+        grade /= this.seasons.size();
+        return  grade;
+    }
+
     @Override
     public String toString() {
         return "Serial{" +
                 super.toString() +
-                "numberOfSeasons=" + numberOfSeasons +
+                ", numberOfSeasons=" + numberOfSeasons +
                 ", seasons=" + seasons +
                 '}';
     }

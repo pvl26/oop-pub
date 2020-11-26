@@ -1,7 +1,6 @@
 package entertainment;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Information about a season of a tv show
@@ -21,11 +20,20 @@ public final class Season {
      * List of ratings for each season
      */
     private List<Double> ratings;
+    /**
+     * List of users that rated the season
+     */
+    private ArrayList<String> usersRating;
 
     public Season(final int currentSeason, final int duration) {
         this.currentSeason = currentSeason;
         this.duration = duration;
         this.ratings = new ArrayList<>();
+        this.usersRating = new ArrayList<>();
+    }
+
+    public int getCurrentSeason() {
+        return currentSeason;
     }
 
     public int getDuration() {
@@ -40,8 +48,17 @@ public final class Season {
         return ratings;
     }
 
-    public void setRatings(final List<Double> ratings) {
-        this.ratings = ratings;
+    public void addRatings(String username, Double rating) {
+        this.addUsersRating(username);
+        this.ratings.add(rating);
+    }
+
+    public ArrayList<String> getUserRatings() {
+        return this.usersRating;
+    }
+
+    public void addUsersRating(String username) {
+        this.usersRating.add(username);
     }
 
     @Override

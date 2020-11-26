@@ -1,4 +1,4 @@
-package User;
+package user;
 
 /**
  * The types of subscription plan an user can have

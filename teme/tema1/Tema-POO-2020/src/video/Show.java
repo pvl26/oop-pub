@@ -1,8 +1,6 @@
-package Video;
+package video;
 
-import actor.ActorsAwards;
 import entertainment.Genre;
-import fileio.MovieInputData;
 import utils.Utils;
 
 import java.util.ArrayList;
@@ -28,6 +26,10 @@ public class Show {
      * Show genres in a list of Genre enums
      */
     private final ArrayList<Genre> genres = new ArrayList<>();
+    /**
+     * Number of views for video
+     */
+    private Integer views = 0;
 
     public Show(String title, int year, ArrayList<String> cast, ArrayList<String> genres) {
         this.title = title;
@@ -50,6 +52,14 @@ public class Show {
 
     public ArrayList<Genre> getGenres() {
         return genres;
+    }
+
+    public Integer getViews() {
+        return views;
+    }
+
+    public void addViews() {
+        this.views += 1;
     }
 
     @Override
