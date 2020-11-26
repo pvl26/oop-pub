@@ -126,7 +126,6 @@ public final class Main {
                                 case "average" -> {}
                                 case "awards" -> {}
                                 case "filter_description" -> {}
-                                default -> {}
                             }
                         }
                         case "movies" -> {
@@ -135,7 +134,6 @@ public final class Main {
                                 case "favorite" -> jsonObject = Queries.favoriteMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters(), userList);
                                 case "longest" -> jsonObject = Queries.longestMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
                                 case "most_viewed" -> jsonObject = Queries.mostViewedMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
-                                default -> {}
                             }
                         }
                         case "shows" -> {
@@ -144,7 +142,6 @@ public final class Main {
                                 case "favorite" -> jsonObject = Queries.favoriteSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters(), userList);
                                 case "longest" -> jsonObject = Queries.longestSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
                                 case "most_viewed" -> jsonObject = Queries.mostViewedSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
-                                default -> {}
                             }
                         }
                         case "users" -> jsonObject = Queries.userQuery(action.getActionId(), userList, action.getNumber(), action.getSortType());
