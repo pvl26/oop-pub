@@ -39,11 +39,21 @@ public class Serial extends Show {
             for (Double rating : season.getRatings()) {
                 seasonRating += rating;
             }
-            seasonRating /= season.getRatings().size();
+            if (season.getRatings().size() == 0) { seasonRating = 0.0; } else {
+                seasonRating /= season.getRatings().size();
+            }
             grade += seasonRating;
         }
         grade /= this.seasons.size();
         return  grade;
+    }
+
+    public int getDuration() {
+        int duration = 0;
+        for (Season season : this.seasons) {
+            duration += season.getDuration();
+        }
+        return duration;
     }
 
     @Override

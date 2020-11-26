@@ -131,18 +131,18 @@ public final class Main {
                         }
                         case "movies" -> {
                             switch (action.getCriteria().toLowerCase()) {
-                                case "ratings" -> {}
-                                case "favorite" -> {}
-                                case "longest" -> {}
+                                case "ratings" -> jsonObject = Queries.bestRatedMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
+                                case "favorite" -> jsonObject = Queries.favoriteMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters(), userList);
+                                case "longest" -> jsonObject = Queries.longestMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
                                 case "most_viewed" -> jsonObject = Queries.mostViewedMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
                                 default -> {}
                             }
                         }
                         case "shows" -> {
                             switch (action.getCriteria().toLowerCase()) {
-                                case "ratings" -> {}
-                                case "favorite" -> {}
-                                case "longest" -> {}
+                                case "ratings" -> jsonObject = Queries.bestRatedSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
+                                case "favorite" -> jsonObject = Queries.favoriteSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters(), userList);
+                                case "longest" -> jsonObject = Queries.longestSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
                                 case "most_viewed" -> jsonObject = Queries.mostViewedSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
                                 default -> {}
                             }
