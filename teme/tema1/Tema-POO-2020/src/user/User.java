@@ -11,6 +11,7 @@ import video.Serial;
 import video.Show;
 
 import java.util.*;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class User {
@@ -30,8 +31,15 @@ public class User {
      * Movies added to favorites list of the user
      */
     private ArrayList<String> favoriteMovies;
-
-    public User (UserInputData userInput) {
+    /**
+     * The number of reviews by user
+     */
+    private Integer reviewsCount;
+    /**
+     *
+     * @param userInput
+     */
+    public User (UserInputData userInput, ArrayList<Movie> movieList, ArrayList<Serial> serialList) {
         this.username = userInput.getUsername();
         if ("premium".equals(userInput.getSubscriptionType().toLowerCase())) {
             this.subscriptionType = Subscription.PREMIUM;
@@ -39,7 +47,23 @@ public class User {
             this.subscriptionType = Subscription.BASIC;
         }
         this.history = userInput.getHistory();
+        this.addView(movieList, serialList);
         this.favoriteMovies = userInput.getFavoriteMovies();
+        this.reviewsCount = 0;
+    }
+
+    private void addView (ArrayList<Movie> movieList, ArrayList<Serial> serialList) {
+        List<Map.Entry<String, Integer>> historyList = new ArrayList<>(this.history.entrySet());
+
+        historyList.forEach(video -> {
+            movieList.stream().filter(movie -> movie.getTitle().equals(video.getKey())).findFirst().ifPresent(
+                    movie -> IntStream.range(0, video.getValue()).forEach(i -> movie.addViews())
+            );
+            serialList.stream().filter(serial -> serial.getTitle().equals(video.getKey())).findFirst().ifPresent(
+                    serial -> IntStream.range(0, video.getValue()).forEach(i -> serial.addViews())
+            );
+        });
+
     }
 
     public JSONObject addToFavoriteMovies(int id, String movie) {
@@ -58,6 +82,7 @@ public class User {
         }
         return jsonObject;
     }
+
 
     public JSONObject viewVideo(int id, String video, ArrayList<Movie> movieList, ArrayList<Serial> serialList) {
         JSONObject jsonObject = new JSONObject();
@@ -92,6 +117,7 @@ public class User {
                     movie.setGradeCount(movie.getGradeCount() + 1);
                     movie.setGrade((movie.getGrade() + grade) / movie.getGradeCount());
                     jsonObject.put("message", "success -> " + video + " was rated with " + grade + " by " + this.username);
+                    this.addReviewsCount();
                 } else {
                     jsonObject.put("message", "error -> " + video + " is not seen");
                 }
@@ -113,6 +139,7 @@ public class User {
                 if (this.history.containsKey(video)) {
                     _season.addRatings(username, grade);
                     jsonObject.put("message", "success -> " + video + " was rated with " + grade + " by " + this.username);
+                    this.addReviewsCount();
                 } else {
                     jsonObject.put("message", "error -> " + video + " is not seen");
                 }
@@ -300,6 +327,14 @@ public class User {
 
     public Map<String, Integer> getHistory() {
         return history;
+    }
+
+    public Integer getReviewsCount() {
+        return reviewsCount;
+    }
+
+    public void addReviewsCount() {
+        this.reviewsCount += 1;
     }
 
     @Override

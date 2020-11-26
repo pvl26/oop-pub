@@ -1,6 +1,7 @@
 package main;
 
 import action.Action;
+import action.Queries;
 import org.json.JSONObject;
 import user.User;
 import video.Movie;
@@ -78,12 +79,6 @@ public final class Main {
         JSONArray arrayResult = new JSONArray();
 
         //TODO add here the entry point to your implementation
-        ArrayList<User> userList = new ArrayList<>();
-        input.getUsers().forEach(userInputData -> {
-            User user =  new User(userInputData);
-            userList.add(user);
-        });
-
         ArrayList<Movie> movieList = new ArrayList<>();
         input.getMovies().forEach(movieInputData -> {
             Movie movie = new Movie(movieInputData);
@@ -94,6 +89,12 @@ public final class Main {
         input.getSerials().forEach(serialInputData -> {
             Serial serial = new Serial(serialInputData);
             serialList.add(serial);
+        });
+
+        ArrayList<User> userList = new ArrayList<>();
+        input.getUsers().forEach(userInputData -> {
+            User user =  new User(userInputData, movieList, serialList);
+            userList.add(user);
         });
 
         ArrayList<Action> actionList = new ArrayList<>();
@@ -120,10 +121,35 @@ public final class Main {
                 case "query" -> {
                     JSONObject jsonObject = new JSONObject();
                     switch (action.getObjectType().toLowerCase()) {
-                        case "actors" -> {}
-                        case "movies" -> {}
-                        case "users" -> {}
+                        case "actors" -> {
+                            switch (action.getCriteria().toLowerCase()) {
+                                case "average" -> {}
+                                case "awards" -> {}
+                                case "filter_description" -> {}
+                                default -> {}
+                            }
+                        }
+                        case "movies" -> {
+                            switch (action.getCriteria().toLowerCase()) {
+                                case "ratings" -> {}
+                                case "favorite" -> {}
+                                case "longest" -> {}
+                                case "most_viewed" -> jsonObject = Queries.mostViewedMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
+                                default -> {}
+                            }
+                        }
+                        case "shows" -> {
+                            switch (action.getCriteria().toLowerCase()) {
+                                case "ratings" -> {}
+                                case "favorite" -> {}
+                                case "longest" -> {}
+                                case "most_viewed" -> jsonObject = Queries.mostViewedSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
+                                default -> {}
+                            }
+                        }
+                        case "users" -> jsonObject = Queries.userQuery(action.getActionId(), userList, action.getNumber(), action.getSortType());
                     }
+                    arrayResult.add(jsonObject);
                 }
                 case "recommendation" -> {
                     User user = userList.stream().filter(usr -> usr.getUsername().equals(action.getUsername())).findFirst().orElse(null);
