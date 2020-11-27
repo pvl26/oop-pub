@@ -15,7 +15,7 @@ public class Movie extends Show {
     private final int duration;   /**
      * Movie grade
      */
-    private double grade;
+    private ArrayList<Double> grades;
     /**
      * Movie grades count
      */
@@ -28,7 +28,7 @@ public class Movie extends Show {
     public Movie (MovieInputData movieInput) {
         super(movieInput.getTitle(), movieInput.getYear(), movieInput.getCast(), movieInput.getGenres());
         this.duration = movieInput.getDuration();
-        this.grade = 0;
+        this.grades = new ArrayList<>();
         this.gradeCount = 0;
         this.ratedBy = new ArrayList<>();
     }
@@ -38,11 +38,19 @@ public class Movie extends Show {
     }
 
     public double getGrade() {
-        return grade;
+        if (this.grades.size() == 0) {
+            return 0.0;
+        }
+        double finalGrade = this.grades.stream().mapToDouble(grade -> grade).sum();
+        return finalGrade / this.grades.size();
     }
 
-    public void setGrade(double grade) {
-        this.grade = grade;
+//    public void setGrade(double grade) {
+//        this.grade = grade;
+//    }
+
+    public void addGrade(double grade) {
+        this.grades.add(grade);
     }
 
     public int getGradeCount() {

@@ -48,6 +48,14 @@ public class Serial extends Show {
         return  grade;
     }
 
+    public int getGradeCount() {
+        int count = 0;
+        for (Season season : this.seasons) {
+            count += season.getRatings().size();
+        }
+        return  count;
+    }
+
     public int getDuration() {
         int duration = 0;
         for (Season season : this.seasons) {

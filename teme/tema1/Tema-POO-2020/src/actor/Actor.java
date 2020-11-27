@@ -38,20 +38,20 @@ public class Actor {
         int ratingCount = 0;
         for (String video : this.filmography) {
             for (Movie movie : movieList) {
-                if (movie.getCast().contains(this.name)) {
+                if (movie.getTitle().equals(video)) {
                     rating += movie.getGrade();
-                    ratingCount++;
+                    if (movie.getGrade() != 0.0) { ratingCount++; }
                 }
             }
             for (Serial serial : serialList) {
-                if (serial.getCast().contains(this.name)) {
+                if (serial.getTitle().equals(video)) {
                     rating += serial.getGrade();
-                    ratingCount++;
+                    if (serial.getGrade() != 0.0) { ratingCount++; }
                 }
             }
-            if (ratingCount != 0) {
-                rating /= ratingCount;
-            }
+        }
+        if (ratingCount != 0) {
+            rating /= ratingCount;
         }
         return rating;
     }

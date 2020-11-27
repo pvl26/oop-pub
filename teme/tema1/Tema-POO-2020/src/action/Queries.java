@@ -3,6 +3,7 @@ package action;
 import actor.Actor;
 import actor.ActorsAwards;
 import entertainment.Genre;
+import fileio.ActionInputData;
 import org.json.JSONObject;
 import user.User;
 import utils.Utils;
@@ -61,7 +62,10 @@ public final class Queries {
                 _topList.add(toSort.get(i).getKey());
             }
             jsonObject.put("message", "Query result: " + _topList.toString());
+//            System.out.println(_topList.toString());
+//            System.out.println("===================================" + sortingType);
         }
+
         return jsonObject;
     }
 
@@ -90,7 +94,7 @@ public final class Queries {
 
     private static CharSequence[] getWords(List<String> wordsList) {
         if (wordsList == null) { return null; } else {
-            return wordsList.toArray(new CharSequence[wordsList.size()]);
+            return wordsList.toArray(new CharSequence[0]);
         }
     }
 
@@ -181,7 +185,7 @@ public final class Queries {
         Genre genre = getGenre(filters.get(1).get(0));
 
         Map<String, Integer> favoriteList = new HashMap<>();
-        userList.forEach(user -> user.getFavoriteMovies().forEach(video -> favoriteList.put(video, 1)));
+        userList.forEach(user -> user.getFavoriteMovies().stream().filter(movie -> favoriteList.computeIfPresent(movie, (k, v) -> v + 1) == null).forEach(video -> favoriteList.put(video, 1)));
 
         Map<String, Integer> topFavoriteMoviesList = new TreeMap<>();
         movieList.stream().filter(movie -> (genre == null || movie.getGenres().contains(genre)) && (year == -1 || movie.getYear() == year) && favoriteList.containsKey(movie.getTitle()) && topFavoriteMoviesList.computeIfPresent(movie.getTitle(), (k, v) -> v + 1) == null).forEach(movie -> topFavoriteMoviesList.put(movie.getTitle(), favoriteList.get(movie.getTitle())));
@@ -207,57 +211,58 @@ public final class Queries {
         ArrayList<ActorsAwards> awards = getAwards((ArrayList<String>) filters.get(3));
 
         Map<String, Double> topActorsList = new TreeMap<>();
-        actorsList.stream().filter(actor -> (awards == null || actor.getAwards().entrySet().containsAll(awards)) && topActorsList.computeIfPresent(actor.getName(), (k,v) -> v + 1) == null).forEach(actor -> topActorsList.put(actor.getName(), actor.getRating(movieList, serialList)));
+        actorsList.stream().filter(actor -> (awards == null || actor.getAwards().entrySet().containsAll(awards)) &&
+                topActorsList.computeIfPresent(actor.getName(), (k,v) -> v + 1) == null)
+                .forEach(actor -> topActorsList.put(actor.getName(), actor.getRating(movieList, serialList)));
 
-        topActorsList.values().removeIf(d -> d < 1.0);
+        topActorsList.values().removeIf(d -> d == 0.0);
 
         if (words != null) {
             for (CharSequence word : words) {
-                topActorsList.entrySet().stream().filter(map -> map.getKey().contains(word)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                topActorsList.entrySet().stream().filter(map -> map.getKey().contains(word))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
             }
         }
 
         return getJsonObject(number, sortingType, id, null, topActorsList);
+
     }
 
     public static JSONObject awardsActorQuery(int id, ArrayList<Actor> actorsList, int number, String sortingType, List<List<String>> filters, ArrayList<Movie> movieList, ArrayList<Serial> serialList) {
-        CharSequence[] words = getWords(filters.get(2));
         ArrayList<ActorsAwards> awards = getAwards((ArrayList<String>) filters.get(3));
 
+        Set<ActorsAwards> conditionSet = new TreeSet<>(awards);
         Map<String, Integer> topActorsList = new TreeMap<>();
-        actorsList.stream().filter(actor -> (awards == null || actor.getAwards().entrySet().containsAll(awards)) && topActorsList.computeIfPresent(actor.getName(), (k,v) -> v + 1) == null).forEach(actor -> topActorsList.put(actor.getName(), actor.getAwards().size()));
+        actorsList.stream().filter(actor -> actor.getAwards().keySet().containsAll(conditionSet) && topActorsList.computeIfPresent(actor.getName(), (k, v) -> v + 1) == null).forEach(actor -> topActorsList.put(actor.getName(), actor.getAwards().values().stream().reduce(0, Integer::sum)));
 
         return getJsonObject(number, sortingType, id, topActorsList, null);
     }
 
     public static JSONObject filtersActorQuery(int id, ArrayList<Actor> actorsList, int number, String sortingType, List<List<String>> filters, ArrayList<Movie> movieList, ArrayList<Serial> serialList) {
-        CharSequence[] words = getWords(filters.get(2));
-        ArrayList<ActorsAwards> awards = getAwards((ArrayList<String>) filters.get(3));
+        ArrayList<String> words = (ArrayList<String>) filters.get(2);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", id);
 
-        Set<Actor> topList = new HashSet<>(actorsList);
         ArrayList<String> topActorsList = new ArrayList<>();
 
-        if (topList.isEmpty()) {
-            jsonObject.put("message", "Query result: []");
-            return jsonObject;
-        }
-        if (words != null) {
-            for (Actor actor : actorsList) {
-                boolean _condition = true;
-                for (CharSequence word : words) {
-                    if (!actor.getCareerDescription().contains(word)) {
-                        _condition = false;
-                        break;
-                    }
+        for (Actor actor : actorsList) {
+            int count = 0;
+            List<String> description = Arrays.asList(actor.getCareerDescription().toLowerCase().split("[ -.,]"));
+            for (String word : words) {
+                if (description.contains(word)) {
+                    count ++;
                 }
-                if (_condition) {
-                    topActorsList.add(actor.getName());
-                }
+            }
+            if (count == words.size()) {
+                topActorsList.add(actor.getName());
             }
         }
 
+        if (sortingType.equals("asc")) {
+            topActorsList.sort(Comparator.naturalOrder());
+        } else {
+            topActorsList.sort(Comparator.reverseOrder());
+        }
         jsonObject.put("message", "Query result: " + topActorsList.toString());
         return jsonObject;
     }

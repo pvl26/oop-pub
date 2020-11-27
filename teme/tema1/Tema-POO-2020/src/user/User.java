@@ -3,7 +3,6 @@ package user;
 import entertainment.Genre;
 import entertainment.Season;
 import fileio.UserInputData;
-import jdk.jshell.execution.Util;
 import org.json.JSONObject;
 import utils.Utils;
 import video.Movie;
@@ -113,8 +112,7 @@ public class User {
                 return jsonObject;
             } else {
                 if (this.history.containsKey(video)) {
-                    movie.setGradeCount(movie.getGradeCount() + 1);
-                    movie.setGrade((movie.getGrade() + grade) / movie.getGradeCount());
+                    movie.addGrade(grade);
                     jsonObject.put("message", "success -> " + video + " was rated with " + grade + " by " + this.username);
                     this.addReviewsCount();
                     movie.addRatedBy(this.username);
@@ -166,7 +164,7 @@ public class User {
                 return jsonObject;
             }
         }
-        jsonObject.put("message", "SearchRecommendation cannot be applied!");
+        jsonObject.put("message", "StandardRecommendation cannot be applied!");
         return jsonObject;
     }
 
@@ -208,6 +206,7 @@ public class User {
 
         for (Movie movie : movieList) {
             if (!this.getHistory().containsKey(movie.getTitle())) {
+                System.out.println(movie.getTitle() + "  ---M--  " + movie.getGrade());
                 if (maxEntry == null || movie.getGrade() > maxEntry.getValue()) {
                     maxEntry = Map.entry(movie.getTitle(), movie.getGrade());
                 }
@@ -215,6 +214,7 @@ public class User {
         }
         for (Serial serial : serialList) {
             if (!this.getHistory().containsKey(serial.getTitle())) {
+                System.out.println(serial.getTitle() + "  -S--  " + serial.getGrade());
                 if (maxEntry == null || serial.getGrade() > maxEntry.getValue()) {
                     maxEntry = Map.entry(serial.getTitle(), serial.getGrade());
                 }
@@ -222,8 +222,9 @@ public class User {
         }
 
 //        if (maxEntry == null) {
-            if (this.standardSearch(id, movieList, serialList).getString("message").contains("result")) {
-                jsonObject.put("message", "BestRatedUnseenRecommendation result: " + this.standardSearch(id, movieList, serialList).getString("message").substring(31));
+            if (maxEntry != null) {
+//            if (this.standardSearch(id, movieList, serialList).getString("message").contains("result")) {
+                jsonObject.put("message", "BestRatedUnseenRecommendation result: " + maxEntry.getKey());
             } else {
                 jsonObject.put("message", "BestRatedUnseenRecommendation cannot be applied!");
             }
@@ -284,10 +285,10 @@ public class User {
 
         Map<String, Integer> favoriteList = new HashMap<>();
 
-        userList.forEach(user -> user.getFavoriteMovies().forEach(video -> favoriteList.put(video, 1)));
+        userList.forEach(user -> user.getFavoriteMovies().stream().filter(movie -> favoriteList.computeIfPresent(movie, (k, v) -> v + 1) == null).forEach(video -> favoriteList.put(video, 1)));
 
         List<Map.Entry<String, Integer>> toSort = new ArrayList<>(favoriteList.entrySet());
-        toSort.sort(Map.Entry.comparingByValue(Comparator.naturalOrder()));
+        toSort.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
         for (Map.Entry<String, Integer> favoriteVideo : toSort) {
             if (!this.getHistory().containsKey(favoriteVideo.getKey())) {
