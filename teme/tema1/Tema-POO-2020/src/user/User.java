@@ -63,7 +63,6 @@ public class User {
                     serial -> IntStream.range(0, video.getValue()).forEach(i -> serial.addViews())
             );
         });
-
     }
 
     public JSONObject addToFavoriteMovies(int id, String movie) {
@@ -110,7 +109,7 @@ public class User {
             if (movie == null) { return jsonObject; }
 
             if (movie.getRatedBy().contains(this.username)) {
-                jsonObject.put("message", "error -> " + movie + " has been already rated");
+                jsonObject.put("message", "error -> " + movie.getTitle() + " has been already rated");
                 return jsonObject;
             } else {
                 if (this.history.containsKey(video)) {
@@ -118,6 +117,7 @@ public class User {
                     movie.setGrade((movie.getGrade() + grade) / movie.getGradeCount());
                     jsonObject.put("message", "success -> " + video + " was rated with " + grade + " by " + this.username);
                     this.addReviewsCount();
+                    movie.addRatedBy(this.username);
                 } else {
                     jsonObject.put("message", "error -> " + video + " is not seen");
                 }
@@ -140,6 +140,7 @@ public class User {
                     _season.addRatings(username, grade);
                     jsonObject.put("message", "success -> " + video + " was rated with " + grade + " by " + this.username);
                     this.addReviewsCount();
+                    _season.addUsersRating(this.username);
                 } else {
                     jsonObject.put("message", "error -> " + video + " is not seen");
                 }
@@ -175,7 +176,7 @@ public class User {
         ArrayList<String> recommendationList = new ArrayList<>();
 
         if (this.getSubscriptionType() == Subscription.BASIC) {
-            jsonObject.put("message", "PopularRecommendation cannot be applied!");
+            jsonObject.put("message", "BestRatedUnseenRecommendation cannot be applied!");
             return jsonObject;
         }
 
@@ -276,7 +277,7 @@ public class User {
         jsonObject.put("id", id);
 
         if (this.getSubscriptionType() == Subscription.BASIC) {
-            jsonObject.put("message", "PopularRecommendation cannot be applied!");
+            jsonObject.put("message", "FavoriteRecommendation cannot be applied!");
             return jsonObject;
         }
 //        fac un map Map<String, Integer>, cu String - titlul videoului, si value

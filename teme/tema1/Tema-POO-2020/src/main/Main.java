@@ -2,6 +2,7 @@ package main;
 
 import action.Action;
 import action.Queries;
+import actor.Actor;
 import org.json.JSONObject;
 import user.User;
 import video.Movie;
@@ -103,6 +104,12 @@ public final class Main {
             actionList.add(action);
         });
 
+        ArrayList<Actor> actorsList = new ArrayList<>();
+        input.getActors().forEach(actorInputData -> {
+            Actor actor = new Actor(actorInputData);
+            actorsList.add(actor);
+        });
+
         Stream<Action> actionStream = actionList.stream();
 
         actionStream.forEachOrdered(action -> {
@@ -123,9 +130,9 @@ public final class Main {
                     switch (action.getObjectType().toLowerCase()) {
                         case "actors" -> {
                             switch (action.getCriteria().toLowerCase()) {
-                                case "average" -> {}
-                                case "awards" -> {}
-                                case "filter_description" -> {}
+                                case "average" -> jsonObject = Queries.averageActorQuery(action.getActionId(), actorsList, action.getNumber(), action.getSortType(), action.getFilters(), movieList, serialList);
+                                case "awards" -> jsonObject = Queries.awardsActorQuery(action.getActionId(), actorsList, action.getNumber(), action.getSortType(), action.getFilters(), movieList, serialList);
+                                case "filter_description" -> jsonObject = Queries.filtersActorQuery(action.getActionId(), actorsList, action.getNumber(), action.getSortType(), action.getFilters(), movieList, serialList);
                             }
                         }
                         case "movies" -> {
