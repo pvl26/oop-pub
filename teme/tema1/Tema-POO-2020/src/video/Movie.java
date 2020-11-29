@@ -25,18 +25,27 @@ public class Movie extends Show {
      */
     private ArrayList<String> ratedBy;
 
-    public Movie (MovieInputData movieInput) {
-        super(movieInput.getTitle(), movieInput.getYear(), movieInput.getCast(), movieInput.getGenres());
+    public Movie(final MovieInputData movieInput) {
+        super(movieInput.getTitle(), movieInput.getYear(),
+                movieInput.getCast(), movieInput.getGenres());
         this.duration = movieInput.getDuration();
         this.grades = new ArrayList<>();
         this.gradeCount = 0;
         this.ratedBy = new ArrayList<>();
     }
 
+    /**
+     * Returns duration of a movie
+     * @return duration as int
+     */
     public int getDuration() {
         return duration;
     }
 
+    /**
+     * Calculate rating of a movie
+     * @return rating as double
+     */
     public double getGrade() {
         if (this.grades.size() == 0) {
             return 0.0;
@@ -45,35 +54,39 @@ public class Movie extends Show {
         return finalGrade / this.grades.size();
     }
 
-//    public void setGrade(double grade) {
-//        this.grade = grade;
-//    }
-
-    public void addGrade(double grade) {
+    /**
+     * Adds a rating to grades array
+     * @param grade is the provided rating
+     */
+    public void addGrade(final double grade) {
         this.grades.add(grade);
     }
 
-    public int getGradeCount() {
-        return gradeCount;
-    }
-
-    public void setGradeCount(int gradeCount) {
-        this.gradeCount = gradeCount;
-    }
-
+    /**
+     * Returns usernames that rated the movie
+     * @return ratedBy, list of usernames
+     */
     public ArrayList<String> getRatedBy() {
         return ratedBy;
     }
 
-    public void addRatedBy(String user) {
+    /**
+     * Add to list of usernames that rated the movie
+     * @param user the username of the reviewer
+     */
+    public void addRatedBy(final String user) {
         this.ratedBy.add(user);
     }
 
+    /**
+     * toString method
+     * @return string of movie fields
+     */
     @Override
     public String toString() {
-        return "Movie{" +
-                super.toString() +
-                "duration=" + duration +
-                '}';
+        return "Movie{"
+                + super.toString()
+                + "duration=" + duration
+                + '}';
     }
 }

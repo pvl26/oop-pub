@@ -18,20 +18,33 @@ public class Serial extends Show {
      */
     private final ArrayList<Season> seasons;
 
-    public Serial(SerialInputData serialInput) {
-        super(serialInput.getTitle(), serialInput.getYear(), serialInput.getCast(), serialInput.getGenres());
+    public Serial(final SerialInputData serialInput) {
+        super(serialInput.getTitle(), serialInput.getYear(),
+                serialInput.getCast(), serialInput.getGenres());
         this.numberOfSeasons = serialInput.getNumberSeason();
         this.seasons = serialInput.getSeasons();
     }
 
+    /**
+     * Get number of seasons of the series
+     * @return number of seasons
+     */
     public int getNumberOfSeasons() {
         return numberOfSeasons;
     }
 
+    /**
+     * Get list of Season Objects
+     * @return list of seasons for the series
+     */
     public ArrayList<Season> getSeasons() {
         return seasons;
     }
 
+    /**
+     * Get the rating of the series as a Double
+     * @return rating of the series
+     */
     public Double getGrade() {
         double grade = 0.0;
         for (Season season : this.seasons) {
@@ -39,7 +52,9 @@ public class Serial extends Show {
             for (Double rating : season.getRatings()) {
                 seasonRating += rating;
             }
-            if (season.getRatings().size() == 0) { seasonRating = 0.0; } else {
+            if (season.getRatings().size() == 0) {
+                seasonRating = 0.0;
+            } else {
                 seasonRating /= season.getRatings().size();
             }
             grade += seasonRating;
@@ -48,14 +63,10 @@ public class Serial extends Show {
         return  grade;
     }
 
-    public int getGradeCount() {
-        int count = 0;
-        for (Season season : this.seasons) {
-            count += season.getRatings().size();
-        }
-        return  count;
-    }
-
+    /**
+     * Get the duration of the series in minutes as int
+     * @return duration of the series
+     */
     public int getDuration() {
         int duration = 0;
         for (Season season : this.seasons) {
@@ -64,12 +75,16 @@ public class Serial extends Show {
         return duration;
     }
 
+    /**
+     * ToString method
+     * @return String of serial's fields
+     */
     @Override
     public String toString() {
-        return "Serial{" +
-                super.toString() +
-                ", numberOfSeasons=" + numberOfSeasons +
-                ", seasons=" + seasons +
-                '}';
+        return "Serial{"
+                + super.toString()
+                + ", numberOfSeasons=" + numberOfSeasons
+                + ", seasons=" + seasons
+                + '}';
     }
 }

@@ -1,0 +1,169 @@
+Pavel-Vlad Mateescu 325CA Tema1 - VideoDB
+November 2020
+https://github.com/pvl26/oop-pub
+
+# Main:
+
+    * Collect input data in 5 ArrayLists, for the list of movies, shows, users, actions and actors.
+
+    * Each ArrayList uses a particular Object:
+	+ Movie   \----> they extend Show Object
+	+ Serial  /
+	+ User
+	+ Action
+	+ Actor
+
+    * Iterate the list of actions and check if the action type is:
+	+ command: 
+	    - favorite:
+		- use the static method addToFavorite() from User class which adds
+                 to the list of favorite movies of the user the title of the
+                 movie/show given as String parameter;
+		- create a JSONObject with the status of the command and return
+                 to main method and add to arrayResult;
+
+	    - view:
+		- use the static method viewVideo() from User class which adds to
+		 the history of the user the title of the movie/show or increment
+		 the view count if it has been seen already;
+		- viewVideo() finds if the given title is a show or a movie and
+		 increments the view count of the Movie/Serial instance;
+		- create a JSONObject with the status of the command and return
+                 to main method and add to arrayResult;
+
+	    - rating:
+		- use the static method addRating() from User class which adds
+		 a rating to the instance of Movie/Serial with the correct title;
+		- if the given Title belongs to a Movie Object, then it check if
+   		 the movie has already been rated by the user, if it was, the JSON
+		 response will include an error message. If the user hasn't already
+		 seen the movie, the message will include an error. If the move has
+		 been seen by the user, then it adds the givven rating to the movie
+		 instance, adds the username to the list of rated by in the movie
+		 instance and increments the reviews count of the user;
+
+	+ query:
+	    + actors:
+		- average:
+		    - use static method averageActorQuery() from Queries final
+		     class;
+		    - makes a TreeMap of the actors and the mean rating of the
+		     shows and movies they starred in;
+		    - use static method getJSONObject to sort the list of actors
+		     based on the sorting criteria and return the JSONObject;	
+
+ 		- awards:
+		    - use static method awardsActorQuery() from Query final class;
+		    - makes a TreeMap of the actors and the mean rating of the
+		     shows and movies they starred in;
+		    - use static method getJSONObject to sort the list of actors
+		     based on the sorting criteria and return the JSONObject;	
+
+		- filter_description:
+		    - use static method filtersActorQuery() from Queries final
+		     class;
+		    - makes an ArrayList with actors name which will be populated
+		     if an actor has in his description all the keywords found
+		     in the filters list;
+		    - use static method getJSONObject to sort the list of actors
+		     based on the sorting criteria and return the JSONObject;	
+
+	    + movies:
+		- ratings:
+		    - use static method bestRatedMoviesQuery() from Queries
+		     final class;
+		    - make a TreeMap of the movies with best ratings;
+		    - use static method getJSONObject to sort the list of movies
+		     based on the sorting criteria and return the JSONObject;
+
+		- favorite:
+		    - use static method favoriteMoviesQuery() from Queries
+		     final class;
+		    - make a TreeMap of the movies that apear the most in the
+		     favorite list of users;
+		    - use static method getJSONObject to sort the list of movies
+		     based on the sorting criteria and return the JSONObject;
+ 
+		- longest:
+		    - use static method longestMoviesQuery() from Queries
+		     final class;
+		    - make a TreeMap of the lenghtiest movies and their lenght;
+		    - use static method getJSONObject to sort the list of movies
+		     based on the sorting criteria and return the JSONObject;
+
+		- most_viewed:
+		    - use static method mostViewedMoviesQuery() from Queries
+		     final class;
+		    - make a TreeMap of the most viewed movies;
+		    - use static method getJSONObject to sort the list of movies
+		     based on the sorting criteria and return the JSONObject;	
+
+            + shows:
+		- ratings:
+		    - use static method bestRatedSerialsQuery() from Queries
+		     final class;
+		    - make a TreeMap of the serials with best ratings;
+		    - use static method getJSONObject to sort the list of movies
+		     based on the sorting criteria and return the JSONObject;
+
+		- favorite:
+		    - use static method favoriteSerialsQuery() from Queries
+		     final class;
+		    - make a TreeMap of the serials that apear the most in the
+		     favorite list of users;
+		    - use static method getJSONObject to sort the list of serials
+		     based on the sorting criteria and return the JSONObject;
+ 
+		- longest:
+		    - use static method longestSerialsQuery() from Queries
+		     final class;
+		    - make a TreeMap of the lenghtiest serials and their lenght;
+		    - use static method getJSONObject to sort the list of serials
+		     based on the sorting criteria and return the JSONObject;
+
+		- most_viewed:
+		    - use static method mostViewedSerialsQuery() from Queries
+		     final class;
+		    - make a TreeMap of the most viewed serials;
+		    - use static method getJSONObject to sort the list of serials
+		     based on the sorting criteria and return the JSONObject;	
+
+	    - users:
+		- use static method userQuery() from Queries final class;
+		- makes a TreeMap with usernames and their reviews count;
+		- use static method getJSONObject to sort the list of movies
+		 based on the sorting criteria and return the JSONObject;	
+
+	+ recommendation:
+	    - standard:
+		- use static method standardSearch() from User to make the 
+		 standard search;
+		- create a JSONObject with the correct message, return the
+		 first unseen movie or show if the search executed corectly;
+		 
+	    - best_unseen:
+		- use static method bestUnseen() from User to make the 
+		 best unseen by the user search;
+		- create a JSONObject with the correct message, return the
+		 the movie or show with the best ratings;
+
+            - popular:
+		- use static method popularRecommendation() from User to
+		 make the most popular search for movies and shows;
+		- create a JSONObject with the correct message, return the
+		 the movie or show that is most popular;
+
+            - favorite:
+		- use static method favoriteRecommendation() from User to
+		 make the most favorite search for movies and shows;
+		- create a JSONObject with the correct message, return the
+		 the movie or show that is present the most in users
+		 favorite list;
+
+            - search:
+		- use static method premiumSearch() from User to
+		 make the most popular search for movies and shows;
+		- create a JSONObject with the correct message, return the
+		 the movie or show that is the result of premium search
+		 query;	
+		

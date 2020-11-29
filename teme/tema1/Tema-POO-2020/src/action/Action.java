@@ -2,7 +2,6 @@ package action;
 
 import fileio.ActionInputData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +63,11 @@ public class Action {
      */
     private final List<List<String>> filters;
 
-    public Action(ActionInputData actionInputData) {
+    /**
+     * Constructor for Action Object
+     * @param actionInputData input data for action
+     */
+    public Action(final ActionInputData actionInputData) {
         this.actionId = actionInputData.getActionId();
         this.actionType = actionInputData.getActionType();
         this.criteria = actionInputData.getCriteria();
@@ -80,74 +83,134 @@ public class Action {
         this.username = actionInputData.getUsername();
     }
 
+    /**
+     * Get action id
+     * @return id of action
+     */
     public int getActionId() {
         return actionId;
     }
 
+    /**
+     * Get action type
+     * @return action type as String
+     */
     public String getActionType() {
         return actionType;
     }
 
+    /**
+     * Get type of action
+     * @return type as String
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Get username of user
+     * @return username
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * Get object type for query
+     * @return query object type
+     */
     public String getObjectType() {
         return objectType;
     }
 
+    /**
+     * Get sorting type
+     * @return "asc" / "desc
+     */
     public String getSortType() {
         return sortType;
     }
 
+    /**
+     * Sorting criteria
+     * @return String
+     */
     public String getCriteria() {
         return criteria;
     }
 
+    /**
+     * Get show title
+     * @return String
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Get genre
+     * @return genre as String
+     */
     public String getGenre() {
         return genre;
     }
 
+    /**
+     * Get number of objects for query
+     * @return int
+     */
     public int getNumber() {
         return number;
     }
 
+    /**
+     * Get grade for rating
+     * @return double
+     */
     public double getGrade() {
         return grade;
     }
 
+    /**
+     * Get season number for serial
+     * @return int
+     */
     public int getSeasonNumber() {
         return seasonNumber;
     }
 
+    /**
+     * Get filters for query
+     * List[0] - year
+     * List[1] - genre
+     * List[2] - words list
+     * List[3] - awards list
+     * @return List<List<String>> list for lists of Strings
+     */
     public List<List<String>> getFilters() {
         return filters;
     }
 
+    /**
+     * ToString method for Action Object
+     * @return String of Action fields
+     */
     @Override
     public String toString() {
-        return "Action{" +
-                "actionId=" + actionId +
-                ", actionType='" + actionType + '\'' +
-                ", type='" + type + '\'' +
-                ", username='" + username + '\'' +
-                ", objectType='" + objectType + '\'' +
-                ", sortType='" + sortType + '\'' +
-                ", criteria='" + criteria + '\'' +
-                ", title='" + title + '\'' +
-                ", genre='" + genre + '\'' +
-                ", number=" + number +
-                ", grade=" + grade +
-                ", seasonNumber=" + seasonNumber +
-                ", filters=" + filters +
-                '}';
+        return "Action{"
+                + "actionId=" + actionId
+                + ", actionType='" + actionType + '\''
+                + ", type='" + type + '\''
+                + ", username='" + username + '\''
+                + ", objectType='" + objectType + '\''
+                + ", sortType='" + sortType + '\''
+                + ", criteria='" + criteria + '\''
+                + ", title='" + title + '\''
+                + ", genre='" + genre + '\''
+                + ", number=" + number
+                + ", grade=" + grade
+                + ", seasonNumber=" + seasonNumber
+                + ", filters=" + filters
+                + '}';
     }
 }

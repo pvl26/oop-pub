@@ -1,6 +1,7 @@
 package entertainment;
 
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Information about a season of a tv show
@@ -48,7 +49,12 @@ public final class Season {
         return ratings;
     }
 
-    public void addRatings(String username, Double rating) {
+    /**
+     * Add rating to season
+     * @param username user that added the rating
+     * @param rating given by the user
+     */
+    public void addRatings(final String username, final Double rating) {
         this.addUsersRating(username);
         this.ratings.add(rating);
     }
@@ -57,7 +63,11 @@ public final class Season {
         return this.usersRating;
     }
 
-    public void addUsersRating(String username) {
+    /**
+     * Add user' name in list of rating authors
+     * @param username of user
+     */
+    public void addUsersRating(final String username) {
         this.usersRating.add(username);
     }
 

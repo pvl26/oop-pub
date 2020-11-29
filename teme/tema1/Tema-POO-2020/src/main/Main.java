@@ -3,7 +3,6 @@ package main;
 import action.Action;
 import action.Queries;
 import actor.Actor;
-import org.json.JSONObject;
 import user.User;
 import video.Movie;
 import video.Serial;
@@ -115,59 +114,118 @@ public final class Main {
         actionStream.forEachOrdered(action -> {
             switch (action.getActionType().toLowerCase()) {
                 case "command" -> {
-                    User user = userList.stream().filter(usr -> usr.getUsername().equals(action.getUsername())).findFirst().orElse(null);
-                    if (user == null) { return; }
-                    JSONObject jsonObject = new JSONObject();
-                    switch (action.getType().toLowerCase()) {
-                        case "favorite" -> jsonObject = user.addToFavoriteMovies(action.getActionId(), action.getTitle());
-                        case "view" -> jsonObject = user.viewVideo(action.getActionId(), action.getTitle(), movieList, serialList);
-                        case "rating" -> jsonObject = user.addRating(action.getActionId(), action.getTitle(), action.getGrade(), action.getSeasonNumber(), movieList, serialList);
+                    User user = userList.stream().filter(usr -> usr.getUsername()
+                            .equals(action.getUsername())).findFirst().orElse(null);
+                    if (user == null) {
+                        return;
                     }
-                    arrayResult.add(jsonObject);
+                    switch (action.getType().toLowerCase()) {
+                        case "favorite" ->
+                            arrayResult.add(user.addToFavoriteMovies(action.getActionId(),
+                                action.getTitle()));
+                        case "view" ->
+                            arrayResult.add(user.viewVideo(action.getActionId(),
+                                action.getTitle(), movieList, serialList));
+                        case "rating" ->
+                            arrayResult.add(user.addRating(action.getActionId(),
+                                action.getTitle(), action.getGrade(),
+                                action.getSeasonNumber(), movieList, serialList));
+                        default -> System.out.println("error");
+                    }
                 }
                 case "query" -> {
-                    JSONObject jsonObject = new JSONObject();
                     switch (action.getObjectType().toLowerCase()) {
                         case "actors" -> {
                             switch (action.getCriteria().toLowerCase()) {
-                                case "average" -> jsonObject = Queries.averageActorQuery(action.getActionId(), actorsList, action.getNumber(), action.getSortType(), action.getFilters(), movieList, serialList);
-                                case "awards" -> jsonObject = Queries.awardsActorQuery(action.getActionId(), actorsList, action.getNumber(), action.getSortType(), action.getFilters(), movieList, serialList);
-                                case "filter_description" -> jsonObject = Queries.filtersActorQuery(action.getActionId(), actorsList, action.getNumber(), action.getSortType(), action.getFilters(), movieList, serialList);
+                                case "average" ->
+                                    arrayResult.add(Queries.averageActorQuery(action.getActionId(),
+                                        actorsList, action.getNumber(), action.getSortType(),
+                                        action.getFilters(), movieList, serialList));
+                                case "awards" ->
+                                    arrayResult.add(Queries.awardsActorQuery(action.getActionId(),
+                                        actorsList, action.getNumber(), action.getSortType(),
+                                        action.getFilters()));
+                                case "filter_description" ->
+                                    arrayResult.add(Queries.filtersActorQuery(action.getActionId(),
+                                        actorsList, action.getSortType(), action.getFilters()));
+                                default -> System.out.println("error");
                             }
                         }
                         case "movies" -> {
-                            switch (action.getCriteria().toLowerCase()) {
-                                case "ratings" -> jsonObject = Queries.bestRatedMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
-                                case "favorite" -> jsonObject = Queries.favoriteMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters(), userList);
-                                case "longest" -> jsonObject = Queries.longestMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
-                                case "most_viewed" -> jsonObject = Queries.mostViewedMoviesQuery(action.getActionId(), movieList, action.getNumber(), action.getSortType(), action.getFilters());
+                           switch (action.getCriteria().toLowerCase()) {
+                              case "ratings" ->
+                                 arrayResult.add(Queries.bestRatedMoviesQuery(action.getActionId(),
+                                        movieList, action.getNumber(), action.getSortType(),
+                                        action.getFilters()));
+                              case "favorite" ->
+                                 arrayResult.add(Queries.favoriteMoviesQuery(action.getActionId(),
+                                        movieList, action.getNumber(), action.getSortType(),
+                                        action.getFilters(), userList));
+                              case "longest" ->
+                                 arrayResult.add(Queries.longestMoviesQuery(action.getActionId(),
+                                        movieList, action.getNumber(), action.getSortType(),
+                                        action.getFilters()));
+                              case "most_viewed" ->
+                                 arrayResult.add(Queries.mostViewedMoviesQuery(action.getActionId(),
+                                        movieList, action.getNumber(), action.getSortType(),
+                                        action.getFilters()));
+                              default -> System.out.println("error");
                             }
                         }
                         case "shows" -> {
-                            switch (action.getCriteria().toLowerCase()) {
-                                case "ratings" -> jsonObject = Queries.bestRatedSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
-                                case "favorite" -> jsonObject = Queries.favoriteSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters(), userList);
-                                case "longest" -> jsonObject = Queries.longestSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
-                                case "most_viewed" -> jsonObject = Queries.mostViewedSerialsQuery(action.getActionId(), serialList, action.getNumber(), action.getSortType(), action.getFilters());
+                           switch (action.getCriteria().toLowerCase()) {
+                              case "ratings" ->
+                                 arrayResult.add(Queries.bestRatedSerialsQuery(action.getActionId(),
+                                        serialList, action.getNumber(), action.getSortType(),
+                                        action.getFilters()));
+                              case "favorite" ->
+                                 arrayResult.add(Queries.favoriteSerialsQuery(action.getActionId(),
+                                        serialList, action.getNumber(), action.getSortType(),
+                                        action.getFilters(), userList));
+                              case "longest" ->
+                                 arrayResult.add(Queries.longestSerialsQuery(action.getActionId(),
+                                        serialList, action.getNumber(), action.getSortType(),
+                                        action.getFilters()));
+                              case "most_viewed" ->
+                                arrayResult.add(Queries.mostViewedSerialsQuery(action.getActionId(),
+                                        serialList, action.getNumber(), action.getSortType(),
+                                        action.getFilters()));
+                              default -> System.out.println("error");
                             }
                         }
-                        case "users" -> jsonObject = Queries.userQuery(action.getActionId(), userList, action.getNumber(), action.getSortType());
+                        case "users" ->
+                                arrayResult.add(Queries.userQuery(action.getActionId(), userList,
+                                    action.getNumber(), action.getSortType()));
+                        default -> System.out.println("error");
                     }
-                    arrayResult.add(jsonObject);
                 }
                 case "recommendation" -> {
-                    User user = userList.stream().filter(usr -> usr.getUsername().equals(action.getUsername())).findFirst().orElse(null);
-                    if (user == null) { return; }
-                    JSONObject jsonObject = new JSONObject();
-                    switch (action.getType().toLowerCase()) {
-                        case "standard" -> jsonObject = user.standardSearch(action.getActionId(), movieList, serialList);
-                        case "best_unseen" -> jsonObject = user.bestUnseen(action.getActionId(), movieList, serialList);
-                        case "popular" -> jsonObject = user.popularRecommendation(action.getActionId(), movieList, serialList);
-                        case "favorite" -> jsonObject = user.favoriteRecommendation(action.getActionId(), movieList, serialList, userList);
-                        case "search" -> jsonObject = user.premiumSearch(action.getActionId(), movieList, serialList, action.getGenre());
+                    User user = userList.stream().filter(usr -> usr.getUsername()
+                            .equals(action.getUsername()))
+                            .findFirst().orElse(null);
+                    if (user == null) {
+                        return;
                     }
-                    arrayResult.add(jsonObject);
+                    switch (action.getType().toLowerCase()) {
+                        case "standard" ->
+                            arrayResult.add(user.standardSearch(action.getActionId(), movieList,
+                                serialList));
+                        case "best_unseen" ->
+                            arrayResult.add(user.bestUnseen(action.getActionId(), movieList,
+                                serialList));
+                        case "popular" ->
+                            arrayResult.add(user.popularRecommendation(action.getActionId(),
+                                movieList, serialList));
+                        case "favorite" ->
+                            arrayResult.add(user.favoriteRecommendation(action.getActionId(),
+                                movieList, serialList, userList));
+                        case "search" ->
+                            arrayResult.add(user.premiumSearch(action.getActionId(), movieList,
+                                serialList, action.getGenre()));
+                        default -> System.out.println("error");
+                    }
                 }
+                default -> System.out.println("error");
             }
         });
         fileWriter.closeJSON(arrayResult);
